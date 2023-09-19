@@ -9,10 +9,21 @@ import UIKit
 import AVFAudio
 import Alamofire
 
-class ListViewController: UIViewController {
-    @IBOutlet weak var ListTableView: UITableView!
+struct Audio: Decodable {
+    let id: Int
+    let url: Data
+}
+
+class ListViewController: UIViewController, Reloadable {
+    
+//    var audioCollection: [Audio] = []
+    @IBOutlet weak var listTableView: UITableView!
+    
+    var delegate: Reloadable?
     
     let viewController = ViewController()
+    let listViewCell = ListViewCell()
+    let nib = UINib(nibName: "ListViewCell", bundle: nil)
     
     var audioPlayer = AVAudioPlayer()
     var isPlaying = false
@@ -23,40 +34,87 @@ class ListViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        ListTableView.register(UINib(nibName: "ListViewCell", bundle: nil), forCellReuseIdentifier: "ListViewCell")
+        navigationItem.leftBarButtonItem?.tintColor = .black
+        
+        // Create the new button
+        let button = UIButton(type: .system)
+        button.setTitle("Clear All", for: .normal)
+        button.tintColor = .black
+        button.addTarget(self, action: #selector(buttonTapped), for: .touchUpInside)
+
+      // Get the existing right bar button items
+      let existingButtons = navigationItem.rightBarButtonItems ?? []
+
+      // Add our new button to the array
+      let newButton = UIBarButtonItem(customView: button)
+      let buttons = existingButtons + [newButton]
+
+      // Set rightBarButtonItems to the array
+      navigationItem.rightBarButtonItems = buttons
+        
+        listTableView.register(nib, forCellReuseIdentifier: "ListViewCell")
+
     }
     
-    @IBAction func clearButton(_ sender: Any) {
-        UserDefaults.standard.removeObject(forKey: "myRecord")
-        number = nil
+    @objc func buttonTapped() {
+        number = UserDefaults.standard.removeObject(forKey: "myRecord")
         
+        listViewCell.nameCollection = [Json()]
+        UserDefaults.standard.removeObject(forKey: "uploadedFileName")
+
+        viewController.numberOfRecords = 0
+        listViewCell.indexPath = IndexPath(row: 0, section: 0)
+        cleanDocumentDirectory()
+        reloadData()
+
         DispatchQueue.main.async {
-            self.ListTableView.reloadData()
+            self.listTableView.reloadData()
         }
     }
     
-    func getIndexNumber(_ num: Int) -> Int {
-        return num
+    func cleanDocumentDirectory() {
+        do {
+            let documentDirectory = try FileManager.default.url(for: .documentDirectory, in: .userDomainMask, appropriateFor: nil, create: false)
+            let fileURLs = try FileManager.default.contentsOfDirectory(at: documentDirectory, includingPropertiesForKeys: nil, options: [])
+
+            for fileURL in fileURLs {
+                print(fileURL, "FiLEUROLLLLLL")
+                try FileManager.default.removeItem(at: fileURL)
+                print("Deleted: \(fileURL.lastPathComponent)")
+            }
+        } catch {
+            print("Error cleaning document directory: \(error)")
+        }
+    }
+    
+    func reloadData() {
+        delegate?.reloadData()
     }
 }
 
 extension ListViewController: UITableViewDataSource, UITableViewDelegate {
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         
-        if number != nil {
-            indexNumber = getIndexNumber(number as! Int)
+        if (UserDefaults.standard.object(forKey: "myRecord")) != nil {
+            
             return number as! Int
         } else {
-            indexNumber = getIndexNumber(0)
             return 0
         }
     }
+
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         guard let cell = tableView.dequeueReusableCell(withIdentifier: "ListViewCell") as? ListViewCell else { return UITableViewCell() }
-
-        cell.textLabel?.text = String("recording \(indexPath.row + 1)")
-        cell.indexPath = indexPath
+        
+        if cell.indexPath.row == 0 && indexPath.section == 0 {
+            cell.indexPath = IndexPath(row: 0, section: 0)
+        } else {
+            cell.indexPath = indexPath
+        }
+        
+        let directoryPath = viewController.getDirectory().appendingPathComponent("\(indexPath.row + 1)")
+        cell.recordingLabel?.text = directoryPath.absoluteString
         
         return cell
     }

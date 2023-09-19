@@ -8,14 +8,20 @@
 import UIKit
 import AVFoundation
 
-class ViewController: UIViewController, AVAudioRecorderDelegate {
+protocol Reloadable {
+    func reloadData()
+}
+
+class ViewController: UIViewController, AVAudioRecorderDelegate, Reloadable {
     @IBOutlet weak var recordButton: UIButton!
     @IBOutlet weak var recordLabel: UILabel!
     
+//    var audioCollection: [Audio] = []
     var recordingSession: AVAudioSession!
     var audioRecorder: AVAudioRecorder!
     var isRecording = false
     var numberOfRecords = 0
+    let uuid = UUID().uuidString
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -23,10 +29,13 @@ class ViewController: UIViewController, AVAudioRecorderDelegate {
         self.initRecordSession()
     }
     
+    func reloadData() {
+        self.reloadData()
+    }
+    
     func setupUi() {
         recordButton.setImage(UIImage(systemName: "circle.inset.filled"), for: .normal)
         recordButton.tintColor = .red
-//        recordButton.frame.size = CGSize(width: 140, height: 140)
         
         recordLabel.isHidden = true
     }
@@ -35,6 +44,7 @@ class ViewController: UIViewController, AVAudioRecorderDelegate {
         // Setting up Session for recording
         recordingSession = AVAudioSession.sharedInstance()
         if let number = UserDefaults.standard.object(forKey: "myRecord") as? Int {
+            print(number, "Number from init Record Session")
             numberOfRecords = number
         }
         AVAudioSession.sharedInstance().requestRecordPermission { hasSession in
@@ -69,6 +79,9 @@ class ViewController: UIViewController, AVAudioRecorderDelegate {
                 audioRecorder = try AVAudioRecorder(url: filename, settings: settings)
                 audioRecorder.delegate = self
                 audioRecorder.record()
+                
+//                let data = try! Data(contentsOf: filename)
+//                audioCollection.append(Audio(id: numberOfRecords, url: data))
             } catch {
                 print(error)
             }
@@ -95,4 +108,12 @@ class ViewController: UIViewController, AVAudioRecorderDelegate {
         return documentDirectory
     }
 
+    @IBAction func openList(_ sender: UIButton) {
+        guard let vc = storyboard?.instantiateViewController(identifier: "ListViewController") as? ListViewController else {
+           return
+         }
+        // vc.audioCollection = audioCollection
+        navigationController?.pushViewController(vc, animated: true)
+    }
 }
+

@@ -24,7 +24,7 @@
                                     <color key="baseForegroundColor" systemColor="labelColor"/>
                                 </buttonConfiguration>
                                 <connections>
-                                    <segue destination="280-dN-M8G" kind="show" id="FU9-vf-gU6"/>
+                                    <action selector="openList:" destination="BYZ-38-t0r" eventType="touchUpInside" id="S2b-0b-OlE"/>
                                 </connections>
                             </button>
                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="List" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="L4p-hK-dpY">
@@ -68,6 +68,7 @@
                             <constraint firstItem="6Tk-OE-BBY" firstAttribute="trailing" secondItem="yhh-Ba-oGw" secondAttribute="trailing" constant="20" id="ml5-vL-Ub0"/>
                             <constraint firstItem="Cwy-94-ABn" firstAttribute="centerX" secondItem="8bC-Xf-vdC" secondAttribute="centerX" id="pwg-IH-L1h"/>
                             <constraint firstItem="O0C-MH-MVq" firstAttribute="top" secondItem="8bC-Xf-vdC" secondAttribute="top" constant="206" id="sNs-1v-L9a"/>
+                            <constraint firstItem="L4p-hK-dpY" firstAttribute="leading" relation="greaterThanOrEqual" secondItem="tHO-zL-s4A" secondAttribute="trailing" constant="8" symbolic="YES" id="tS4-fG-fd9"/>
                         </constraints>
                     </view>
                     <navigationItem key="navigationItem" id="fev-u9-vlQ"/>
@@ -81,46 +82,38 @@
             <point key="canvasLocation" x="928.98550724637687" y="97.767857142857139"/>
         </scene>
         <!--List View Controller-->
-        <scene sceneID="fSn-EO-UxD">
+        <scene sceneID="exx-fs-H4g">
             <objects>
-                <viewController id="280-dN-M8G" customClass="ListViewController" customModule="recordingApp" customModuleProvider="target" sceneMemberID="viewController">
-                    <view key="view" contentMode="scaleToFill" id="VZH-CI-MZN">
+                <viewController storyboardIdentifier="ListViewController" id="m8U-yV-SQW" customClass="ListViewController" customModule="recordingApp" customModuleProvider="target" sceneMemberID="viewController">
+                    <view key="view" contentMode="scaleToFill" id="zHR-GL-XO0">
                         <rect key="frame" x="0.0" y="0.0" width="414" height="896"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
-                            <tableView clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="default" rowHeight="-1" estimatedRowHeight="-1" sectionHeaderHeight="-1" estimatedSectionHeaderHeight="-1" sectionFooterHeight="-1" estimatedSectionFooterHeight="-1" translatesAutoresizingMaskIntoConstraints="NO" id="vjs-1M-Iax">
-                                <rect key="frame" x="0.0" y="88" width="414" height="774"/>
+                            <tableView clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="default" rowHeight="-1" estimatedRowHeight="-1" sectionHeaderHeight="-1" estimatedSectionHeaderHeight="-1" sectionFooterHeight="-1" estimatedSectionFooterHeight="-1" translatesAutoresizingMaskIntoConstraints="NO" id="f2s-Mx-xOk">
+                                <rect key="frame" x="0.0" y="44" width="414" height="818"/>
                                 <color key="backgroundColor" systemColor="systemBackgroundColor"/>
                                 <connections>
-                                    <outlet property="dataSource" destination="280-dN-M8G" id="TuI-9r-7y3"/>
-                                    <outlet property="delegate" destination="280-dN-M8G" id="kz2-FM-ZQg"/>
+                                    <outlet property="dataSource" destination="m8U-yV-SQW" id="jDN-Qg-WFB"/>
+                                    <outlet property="delegate" destination="m8U-yV-SQW" id="NFw-d1-VFn"/>
                                 </connections>
                             </tableView>
                         </subviews>
-                        <viewLayoutGuide key="safeArea" id="wde-E6-P8j"/>
+                        <viewLayoutGuide key="safeArea" id="zjb-qv-E1m"/>
                         <color key="backgroundColor" systemColor="systemBackgroundColor"/>
                         <constraints>
-                            <constraint firstItem="vjs-1M-Iax" firstAttribute="trailing" secondItem="wde-E6-P8j" secondAttribute="trailing" id="NDF-6s-kMy"/>
-                            <constraint firstItem="vjs-1M-Iax" firstAttribute="top" secondItem="wde-E6-P8j" secondAttribute="top" id="ZLJ-aw-762"/>
-                            <constraint firstItem="vjs-1M-Iax" firstAttribute="leading" secondItem="wde-E6-P8j" secondAttribute="leading" id="hk8-mE-eL0"/>
-                            <constraint firstItem="vjs-1M-Iax" firstAttribute="bottom" secondItem="wde-E6-P8j" secondAttribute="bottom" id="juY-Np-6vg"/>
+                            <constraint firstAttribute="trailing" secondItem="f2s-Mx-xOk" secondAttribute="trailing" id="LiP-YQ-NN7"/>
+                            <constraint firstItem="f2s-Mx-xOk" firstAttribute="bottom" secondItem="zjb-qv-E1m" secondAttribute="bottom" id="YrY-Zm-5pl"/>
+                            <constraint firstItem="f2s-Mx-xOk" firstAttribute="leading" secondItem="zjb-qv-E1m" secondAttribute="leading" id="lCe-h3-CZv"/>
+                            <constraint firstItem="f2s-Mx-xOk" firstAttribute="top" secondItem="zjb-qv-E1m" secondAttribute="top" id="xxb-Al-8ye"/>
                         </constraints>
                     </view>
-                    <navigationItem key="navigationItem" id="cpm-CT-MtE">
-                        <barButtonItem key="rightBarButtonItem" title="Clear All" id="x8C-h8-19r">
-                            <color key="tintColor" systemColor="labelColor"/>
-                            <connections>
-                                <action selector="clearButton:" destination="280-dN-M8G" id="sN7-5g-Pyf"/>
-                            </connections>
-                        </barButtonItem>
-                    </navigationItem>
                     <connections>
-                        <outlet property="ListTableView" destination="vjs-1M-Iax" id="oUS-nx-LoY"/>
+                        <outlet property="listTableView" destination="f2s-Mx-xOk" id="ggn-b0-GdW"/>
                     </connections>
                 </viewController>
-                <placeholder placeholderIdentifier="IBFirstResponder" id="B3J-Y6-PsW" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="QGP-eG-SMq" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="1679.7101449275362" y="97.767857142857139"/>
+            <point key="canvasLocation" x="1764" y="98"/>
         </scene>
         <!--Navigation Controller-->
         <scene sceneID="0cd-2J-VyF">
