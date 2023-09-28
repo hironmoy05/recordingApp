@@ -21,9 +21,7 @@ class ListViewCell: UITableViewCell {
     @IBOutlet weak var recordingLabel: UILabel!
     @IBOutlet weak var transcriptBtn: UIButton!
     
-    var viewController = ViewController()
-    var indexPath: IndexPath = IndexPath(row: 0, section: 0)
-    var audioCollection: [Audio] = []
+    var indexPath: IndexPath!
     var nameCollection: [Json] = []
     
     override func awakeFromNib() {
@@ -41,22 +39,26 @@ class ListViewCell: UITableViewCell {
 //            showTranscript()
         }
     }
-
-    override func setSelected(_ selected: Bool, animated: Bool) {
-        super.setSelected(selected, animated: animated)
-
-        
-    }
     
     func setupUI() {
         uploadBtn.setImage(UIImage(systemName: "arrow.up"), for: .normal)
     }
     
     @IBAction func uploadButton(_ sender: Any) {
-        let path = viewController.getDirectory().appendingPathComponent("\(indexPath.row + 1).m4a")
-
+        var fileIndex = ""
+        let index = indexPath.row + 1
+        if index > 99 {
+            fileIndex = "\(index)"
+        } else if index > 9 {
+            fileIndex = "0\(index)"
+        } else {
+            fileIndex = "00\(index)"
+        }
+        
+        guard let path = AudioSessionConfig.getDirectoryURLForFileName(fName: fileIndex) else { return }
+//            .appendingPathComponent("\(indexPath.row + 1).m4a")
         let m4aData = try! Data(contentsOf: path)
-
+        print(String(bytes: m4aData, encoding: .utf8), "Data from ListViewCell from uploadButton action")
         uploadAudioFile(audioData: m4aData)
     }
     
@@ -84,6 +86,7 @@ class ListViewCell: UITableViewCell {
                 let getData = try! JSONDecoder().decode(Json.self, from: data)
                 
                 // storing Data
+                self.nameCollection = [Json]()
                 self.nameCollection.append(Json(fileName: getData.fileName))
                 
                 if let jsonData = try? JSONEncoder().encode(self.nameCollection) {
@@ -100,7 +103,6 @@ class ListViewCell: UITableViewCell {
     
     @objc func showTranscript() {
         let filename = nameCollection[0].fileName!
-        print(filename, "type of the file")
         
         AF.request("https://7uzj0h0zkb.execute-api.us-east-1.amazonaws.com/default/getTransciptfile",
                    method: .post,

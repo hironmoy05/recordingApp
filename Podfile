@@ -3,5 +3,4 @@
 
 target 'recordingApp' do
   pod 'Alamofire'
-
 end
